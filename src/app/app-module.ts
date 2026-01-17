@@ -7,11 +7,13 @@ import { AppRoutingModule } from './app-routing-module';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { Home } from './features/home/home';
+import { UnauthorizedComponent } from './features/unauthorized/unauthorized';
 
 @NgModule({
   declarations: [
     App,
-    Home
+    Home,
+    UnauthorizedComponent
   ],
   imports: [
     BrowserModule,
