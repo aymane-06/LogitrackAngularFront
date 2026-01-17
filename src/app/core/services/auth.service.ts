@@ -124,7 +124,7 @@ export class AuthService {
         this.router.navigate(['/admin/dashboard']);
         break;
       case UserRole.WAREHOUSE_MANAGER:
-        this.router.navigate(['/warehouse/dashboard']);
+        this.router.navigate(['/warehouse-manager/dashboard']);
         break;
       case UserRole.CLIENT:
         this.router.navigate(['/client/dashboard']);
