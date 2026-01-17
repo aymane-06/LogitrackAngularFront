@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 export type NotificationType = 'success' | 'error' | 'warning' | 'info';
 
@@ -46,7 +46,7 @@ export type NotificationType = 'success' | 'error' | 'warning' | 'info';
     </div>
   `
 })
-export class NotificationComponent {
+export class NotificationComponent implements OnInit, OnDestroy {
   @Input() show = false;
   @Input() type: NotificationType = 'info';
   @Input() title = '';

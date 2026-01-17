@@ -127,14 +127,22 @@ export class DataTableComponent {
   sortDirection: 'asc' | 'desc' = 'asc';
   currentPage = 1;
   Math = Math;
+  private sortedData: any[] = [];
+
+  get displayData(): any[] {
+    // Use sorted data if sorting is applied, otherwise use original data
+    return this.sortColumn ? this.sortedData : this.data;
+  }
 
   get filteredData(): any[] {
+    const dataToFilter = this.displayData;
+    
     if (!this.searchTerm) {
-      return this.data;
+      return dataToFilter;
     }
     
     const term = this.searchTerm.toLowerCase();
-    return this.data.filter(item => 
+    return dataToFilter.filter(item => 
       this.columns.some(column => {
         const value = this.getNestedValue(item, column.key);
         return value?.toString().toLowerCase().includes(term);
@@ -193,7 +201,8 @@ export class DataTableComponent {
       this.sortDirection = 'asc';
     }
     
-    this.data.sort((a, b) => {
+    // Create a sorted copy instead of mutating the original
+    this.sortedData = [...this.data].sort((a, b) => {
       const aVal = this.getNestedValue(a, column);
       const bVal = this.getNestedValue(b, column);
       
