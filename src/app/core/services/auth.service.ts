@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { LoginRequest, LoginResponse, RefreshTokenResponse, RegisterRequest, User, UserRole } from '../../shared/models/user.model';
 import { TokenService } from './token.service';
 
@@ -9,7 +10,7 @@ import { TokenService } from './token.service';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:8080/api'; 
+  private readonly API_URL = environment.apiUrl; 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 

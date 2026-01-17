@@ -1,48 +1,39 @@
+import { Product } from './product.model';
+import { Supplier } from './supplier.model';
+import { Warehouse } from './warehouse.model';
+
 export enum PurchaseOrderStatus {
-  PENDING = 'PENDING',
-  PARTIALLY_RECEIVED = 'PARTIALLY_RECEIVED',
+  CREATED = 'CREATED',
+  APPROVED = 'APPROVED',
   RECEIVED = 'RECEIVED',
-  CANCELLED = 'CANCELLED'
+  CANCELED = 'CANCELED'
 }
 
 export interface PurchaseOrderLine {
-  id?: number;
-  productId: number;
-  productSku?: string;
-  productName?: string;
-  orderedQty: number;
-  receivedQty: number;
-  unitPrice: number;
-  totalPrice?: number;
+  id: string;
+  product: Product;
+  quantity: number;
+  unitCost: number;
 }
 
 export interface PurchaseOrder {
-  id: number;
-  poNumber: string;
-  supplierId: number;
-  supplierName?: string;
-  warehouseId: number;
-  warehouseName?: string;
+  id: string;
+  supplier: Supplier;
+  warehouse: Warehouse;
   status: PurchaseOrderStatus;
-  orderLines: PurchaseOrderLine[];
-  totalAmount: number;
-  expectedDeliveryDate: string;
+  expectedDelivery: string;
+  lines: PurchaseOrderLine[];
   createdAt: string;
   updatedAt: string;
-  receivedAt?: string;
 }
 
-export interface CreatePurchaseOrderRequest {
-  supplierId: number;
-  warehouseId: number;
-  expectedDeliveryDate: string;
-  orderLines: PurchaseOrderLine[];
-}
-
-export interface ReceivePurchaseOrderRequest {
-  poId: number;
-  receiptLines: {
-    lineId: number;
-    receivedQty: number;
+export interface PurchaseOrderDTO {
+  supplierId: string;
+  warehouseId: string;
+  expectedDelivery: string;
+  lines: {
+    productId: string;
+    quantity: number;
+    unitCost: number;
   }[];
 }

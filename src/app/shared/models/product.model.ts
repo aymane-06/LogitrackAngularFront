@@ -1,20 +1,16 @@
 export interface Product {
-  id: number;
-  sku: string;
+  id: string;
   name: string;
-  description: string;
-  price: number;
+  category: string;
+  boughtPrice: number;
   active: boolean;
-  supplierId: number;
-  supplierName?: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface ProductCreate {
-  sku: string;
+export interface ProductDTO {
   name: string;
-  description: string;
-  price: number;
-  supplierId: number;
+  category: string;
+  boughtPrice: number;
+  active: boolean;
 }
