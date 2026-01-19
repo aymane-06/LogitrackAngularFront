@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +11,7 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrl: './login.css',
 })
 export class Login implements OnInit {
-  loginForm!: FormGroup;
+  loginForm: FormGroup;
   loading = false;
   errorMessage = '';
   returnUrl = '';
@@ -19,8 +20,15 @@ export class Login implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute,
+    private toastService: ToastService
+  ) {
+    // Create reactive form in constructor
+    this.loginForm = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
 
   ngOnInit(): void {
     // Check if already logged in
@@ -28,12 +36,6 @@ export class Login implements OnInit {
       this.authService.navigateToDashboard();
       return;
     }
-
-    // Create reactive form
-    this.loginForm = this.formBuilder.group({
-      username: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
 
     // Get return URL from query params
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
@@ -59,7 +61,8 @@ export class Login implements OnInit {
     this.authService.login(this.loginForm.value).subscribe({
       next: (response) => {
         console.log('Login successful', response);
-        
+        this.toastService.success('Login successful');
+        this.loading = false;
         // Navigate based on returnUrl or user role
         if (this.returnUrl && this.returnUrl !== '/') {
           this.router.navigate([this.returnUrl]);

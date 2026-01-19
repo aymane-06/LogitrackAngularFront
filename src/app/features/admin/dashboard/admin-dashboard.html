@@ -1,0 +1,79 @@
+<div class="dashboard-layout">
+  <app-sidebar></app-sidebar>
+  
+  <div class="main-content">
+    <app-navbar title="Admin Dashboard"></app-navbar>
+    
+    <div class="content">
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <app-stats-card
+          *ngFor="let stat of stats"
+          [title]="stat.title"
+          [value]="stat.value"
+          [icon]="stat.icon"
+          [color]="stat.color"
+          [trend]="stat.trend">
+        </app-stats-card>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="section">
+        <h2 class="section-title">Quick Actions</h2>
+        <div class="actions-grid">
+          <button class="action-card">
+            <span class="action-icon">➕</span>
+            <span class="action-label">Add User</span>
+          </button>
+          <button class="action-card">
+            <span class="action-icon">📦</span>
+            <span class="action-label">Add Product</span>
+          </button>
+          <button class="action-card">
+            <span class="action-icon">🏢</span>
+            <span class="action-label">Add Warehouse</span>
+          </button>
+          <button class="action-card">
+            <span class="action-icon">🤝</span>
+            <span class="action-label">Add Supplier</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="section">
+        <h2 class="section-title">Recent Activity</h2>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-icon">👤</div>
+            <div class="activity-content">
+              <p class="activity-text"><strong>John Doe</strong> registered as a new user</p>
+              <p class="activity-time">2 minutes ago</p>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon">📦</div>
+            <div class="activity-content">
+              <p class="activity-text">New order <strong>#ORD-1234</strong> created</p>
+              <p class="activity-time">15 minutes ago</p>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon">🏢</div>
+            <div class="activity-content">
+              <p class="activity-text">Warehouse <strong>NYC-01</strong> capacity updated</p>
+              <p class="activity-time">1 hour ago</p>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon">📋</div>
+            <div class="activity-content">
+              <p class="activity-text">Purchase order <strong>#PO-5678</strong> approved</p>
+              <p class="activity-time">3 hours ago</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

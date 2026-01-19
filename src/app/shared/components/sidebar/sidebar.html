@@ -1,0 +1,29 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h2>LogiTrack</h2>
+    <p class="user-info" *ngIf="currentUser">{{ currentUser.name }}</p>
+    <p class="user-role" *ngIf="currentUser">{{ currentUser.role }}</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul>
+      <li *ngFor="let item of menuItems">
+        <a 
+          *ngIf="hasAccess(item)"
+          [routerLink]="item.route" 
+          [class.active]="isActiveRoute(item.route)"
+          class="nav-item">
+          <span class="icon">{{ item.icon }}</span>
+          <span class="label">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button (click)="onLogout()" class="logout-btn">
+      <span class="icon">🚪</span>
+      <span class="label">Logout</span>
+    </button>
+  </div>
+</aside>

@@ -1,0 +1,66 @@
+<div class="dashboard-layout">
+  <app-sidebar></app-sidebar>
+  
+  <div class="main-content">
+    <app-navbar title="Users Management"></app-navbar>
+    
+    <div class="content">
+      <!-- Header -->
+      <div class="page-header">
+        <div>
+          <h2 class="page-title">Users</h2>
+          <p class="page-subtitle">Manage system users and their roles</p>
+        </div>
+        <button class="btn-add" (click)="addUser()">
+          <span class="btn-icon">➕</span>
+          <span>Add User</span>
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <app-stats-card
+          title="Total Users"
+          [value]="users.length"
+          icon="👥"
+          color="blue">
+        </app-stats-card>
+        <app-stats-card
+          title="Active Users"
+          [value]="getActiveUsersCount()"
+          icon="✅"
+          color="green">
+        </app-stats-card>
+        <app-stats-card
+          title="Admins"
+          [value]="getAdminUsersCount()"
+          icon="👑"
+          color="purple">
+        </app-stats-card>
+        <app-stats-card
+          title="Inactive"
+          [value]="getInactiveUsersCount()"
+          icon="❌"
+          color="red">
+        </app-stats-card>
+      </div>
+
+      <!-- Data Table -->
+      <app-data-table
+        [columns]="columns"
+        [data]="users"
+        [actions]="actions"
+        [loading]="loading"
+        (rowClick)="onRowClick($event)">
+      </app-data-table>
+    </div>
+  </div>
+</div>
+
+<!-- User Form Modal -->
+<app-user-form-modal
+  [isOpen]="isModalOpen"
+  [user]="selectedUser"
+  (close)="onModalClose()"
+  (save)="onUserSave($event)">
+</app-user-form-modal>

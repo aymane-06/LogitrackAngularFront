@@ -1,0 +1,97 @@
+<app-modal
+  [isOpen]="isOpen"
+  [title]="isEditMode ? 'Edit Product' : 'Add New Product'"
+  size="lg"
+  (close)="onClose()">
+  
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Product Name *</label>
+        <input
+          type="text"
+          class="form-input"
+          formControlName="name"
+          placeholder="Enter product name"
+          [class.error]="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+        <span class="error-message" *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+          {{ getFieldError('name') }}
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">SKU *</label>
+        <input
+          type="text"
+          class="form-input"
+          formControlName="sku"
+          placeholder="e.g., LAP-001"
+          [class.error]="productForm.get('sku')?.invalid && productForm.get('sku')?.touched">
+        <span class="error-message" *ngIf="productForm.get('sku')?.invalid && productForm.get('sku')?.touched">
+          {{ getFieldError('sku') }}
+        </span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Category *</label>
+        <select class="form-input" formControlName="category">
+          <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Price *</label>
+        <input
+          type="number"
+          class="form-input"
+          formControlName="price"
+          placeholder="0.00"
+          step="0.01"
+          [class.error]="productForm.get('price')?.invalid && productForm.get('price')?.touched">
+        <span class="error-message" *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched">
+          {{ getFieldError('price') }}
+        </span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Stock *</label>
+        <input
+          type="number"
+          class="form-input"
+          formControlName="stock"
+          placeholder="0"
+          [class.error]="productForm.get('stock')?.invalid && productForm.get('stock')?.touched">
+        <span class="error-message" *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched">
+          {{ getFieldError('stock') }}
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Warehouse *</label>
+        <select class="form-input" formControlName="warehouse">
+          <option *ngFor="let wh of warehouses" [value]="wh">{{ wh }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Status *</label>
+      <select class="form-input" formControlName="status">
+        <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="onClose()">
+        Cancel
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid">
+        {{ isEditMode ? 'Update' : 'Create' }}
+      </button>
+    </div>
+  </form>
+</app-modal>

@@ -1,0 +1,120 @@
+<app-modal
+  [isOpen]="isOpen"
+  [title]="isEditMode ? 'Edit Supplier' : 'Add New Supplier'"
+  size="lg"
+  (close)="onClose()">
+  
+  <form [formGroup]="supplierForm" (ngSubmit)="onSubmit()">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Supplier Name *</label>
+        <input
+          type="text"
+          class="form-input"
+          formControlName="name"
+          placeholder="Enter supplier name"
+          [class.error]="supplierForm.get('name')?.invalid && supplierForm.get('name')?.touched">
+        <span class="error-message" *ngIf="supplierForm.get('name')?.invalid && supplierForm.get('name')?.touched">
+          {{ getFieldError('name') }}
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Code *</label>
+        <input
+          type="text"
+          class="form-input"
+          formControlName="code"
+          placeholder="e.g., SUP-001"
+          [class.error]="supplierForm.get('code')?.invalid && supplierForm.get('code')?.touched">
+        <span class="error-message" *ngIf="supplierForm.get('code')?.invalid && supplierForm.get('code')?.touched">
+          {{ getFieldError('code') }}
+        </span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Contact Person *</label>
+        <input
+          type="text"
+          class="form-input"
+          formControlName="contact"
+          placeholder="Enter contact person name"
+          [class.error]="supplierForm.get('contact')?.invalid && supplierForm.get('contact')?.touched">
+        <span class="error-message" *ngIf="supplierForm.get('contact')?.invalid && supplierForm.get('contact')?.touched">
+          {{ getFieldError('contact') }}
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email *</label>
+        <input
+          type="email"
+          class="form-input"
+          formControlName="email"
+          placeholder="Enter email address"
+          [class.error]="supplierForm.get('email')?.invalid && supplierForm.get('email')?.touched">
+        <span class="error-message" *ngIf="supplierForm.get('email')?.invalid && supplierForm.get('email')?.touched">
+          {{ getFieldError('email') }}
+        </span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Phone *</label>
+        <input
+          type="tel"
+          class="form-input"
+          formControlName="phone"
+          placeholder="+1-555-0100"
+          [class.error]="supplierForm.get('phone')?.invalid && supplierForm.get('phone')?.touched">
+        <span class="error-message" *ngIf="supplierForm.get('phone')?.invalid && supplierForm.get('phone')?.touched">
+          {{ getFieldError('phone') }}
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Category *</label>
+        <select class="form-input" formControlName="category">
+          <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Rating *</label>
+        <input
+          type="number"
+          class="form-input"
+          formControlName="rating"
+          placeholder="0.0"
+          step="0.1"
+          min="0"
+          max="5"
+          [class.error]="supplierForm.get('rating')?.invalid && supplierForm.get('rating')?.touched">
+        <span class="error-message" *ngIf="supplierForm.get('rating')?.invalid && supplierForm.get('rating')?.touched">
+          {{ getFieldError('rating') }}
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Status *</label>
+        <select class="form-input" formControlName="status">
+          <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="onClose()">
+        Cancel
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="supplierForm.invalid">
+        {{ isEditMode ? 'Update' : 'Create' }}
+      </button>
+    </div>
+  </form>
+</app-modal>

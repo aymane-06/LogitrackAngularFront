@@ -1,0 +1,57 @@
+<app-modal
+  [isOpen]="isOpen"
+  [title]="isEditMode ? 'Edit User' : 'Add New User'"
+  size="md"
+  (close)="onClose()">
+  
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label class="form-label">Name *</label>
+      <input
+        type="text"
+        class="form-input"
+        formControlName="name"
+        placeholder="Enter full name"
+        [class.error]="userForm.get('name')?.invalid && userForm.get('name')?.touched">
+      <span class="error-message" *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched">
+        {{ getFieldError('name') }}
+      </span>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Email *</label>
+      <input
+        type="email"
+        class="form-input"
+        formControlName="email"
+        placeholder="Enter email address"
+        [class.error]="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+      <span class="error-message" *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+        {{ getFieldError('email') }}
+      </span>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Role *</label>
+      <select class="form-input" formControlName="role">
+        <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+      </select>
+    </div>
+
+    <div class="form-group checkbox-group">
+      <label class="checkbox-label">
+        <input type="checkbox" formControlName="active">
+        <span>Active User</span>
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="onClose()">
+        Cancel
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">
+        {{ isEditMode ? 'Update' : 'Create' }}
+      </button>
+    </div>
+  </form>
+</app-modal>

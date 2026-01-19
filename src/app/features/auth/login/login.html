@@ -13,18 +13,19 @@
         {{ errorMessage }}
       </div>
 
-      <!-- Username Field -->
+      <!-- Email Field -->
       <div class="form-group">
-        <label for="username">Username</label>
+        <label for="email">Email</label>
         <input
-          id="username"
-          type="text"
-          formControlName="username"
+          id="email"
+          type="email"
+          formControlName="email"
           class="form-control"
-          placeholder="Enter your username"
-          [class.error]="f['username'].invalid && f['username'].touched">
-        <div *ngIf="f['username'].invalid && f['username'].touched" class="error-text">
-          <span *ngIf="f['username'].errors?.['required']">Username is required</span>
+          placeholder="Enter your email"
+          [class.error]="f['email'].invalid && f['email'].touched">
+        <div *ngIf="f['email'].invalid && f['email'].touched" class="error-text">
+          <span *ngIf="f['email'].errors?.['required']">Email is required</span>
+          <span *ngIf="f['email'].errors?.['email']">Invalid email format</span>
         </div>
       </div>
 
@@ -56,9 +57,9 @@
       <!-- Demo Credentials -->
       <div class="demo-credentials">
         <p><strong>Demo Credentials:</strong></p>
-        <p>Admin: admin / password123</p>
-        <p>Warehouse: warehouse1 / password123</p>
-        <p>Client: client1 / password123</p>
+        <p>Admin: admin@logitrack.com / AdminPass123!</p>
+        <p>Warehouse: warehouse1@logitrack.com / WarehousePass123!</p>
+        <p>Client: client1@logitrack.com / ClientPass123!</p>
       </div>
 
       <!-- Register Link -->

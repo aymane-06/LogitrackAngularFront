@@ -1,0 +1,66 @@
+<div class="dashboard-layout">
+  <app-sidebar></app-sidebar>
+  
+  <div class="main-content">
+    <app-navbar title="Products Management"></app-navbar>
+    
+    <div class="content">
+      <!-- Header -->
+      <div class="page-header">
+        <div>
+          <h2 class="page-title">Products</h2>
+          <p class="page-subtitle">Manage product inventory and details</p>
+        </div>
+        <button class="btn-add" (click)="addProduct()">
+          <span class="btn-icon">➕</span>
+          <span>Add Product</span>
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <app-stats-card
+          title="Total Products"
+          [value]="products.length"
+          icon="📦"
+          color="blue">
+        </app-stats-card>
+        <app-stats-card
+          title="In Stock"
+          [value]="getInStockCount()"
+          icon="✅"
+          color="green">
+        </app-stats-card>
+        <app-stats-card
+          title="Low Stock"
+          [value]="getLowStockCount()"
+          icon="⚠️"
+          color="orange">
+        </app-stats-card>
+        <app-stats-card
+          title="Out of Stock"
+          [value]="getOutOfStockCount()"
+          icon="❌"
+          color="red">
+        </app-stats-card>
+      </div>
+
+      <!-- Data Table -->
+      <app-data-table
+        [columns]="columns"
+        [data]="products"
+        [actions]="actions"
+        [loading]="loading"
+        (rowClick)="onRowClick($event)">
+      </app-data-table>
+    </div>
+  </div>
+</div>
+
+<!-- Product Form Modal -->
+<app-product-form-modal
+  [isOpen]="isModalOpen"
+  [product]="selectedProduct"
+  (close)="onModalClose()"
+  (save)="onProductSave($event)">
+</app-product-form-modal>

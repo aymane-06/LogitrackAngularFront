@@ -1,0 +1,66 @@
+<div class="dashboard-layout">
+  <app-sidebar></app-sidebar>
+  
+  <div class="main-content">
+    <app-navbar title="Warehouses Management"></app-navbar>
+    
+    <div class="content">
+      <!-- Header -->
+      <div class="page-header">
+        <div>
+          <h2 class="page-title">Warehouses</h2>
+          <p class="page-subtitle">Manage warehouse locations and capacity</p>
+        </div>
+        <button class="btn-add" (click)="addWarehouse()">
+          <span class="btn-icon">➕</span>
+          <span>Add Warehouse</span>
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <app-stats-card
+          title="Total Warehouses"
+          [value]="warehouses.length"
+          icon="🏢"
+          color="blue">
+        </app-stats-card>
+        <app-stats-card
+          title="Active"
+          [value]="getActiveWarehousesCount()"
+          icon="✅"
+          color="green">
+        </app-stats-card>
+        <app-stats-card
+          title="Total Capacity"
+          [value]="getTotalCapacity()"
+          icon="📊"
+          color="purple">
+        </app-stats-card>
+        <app-stats-card
+          title="Current Stock"
+          [value]="getTotalCurrentStock()"
+          icon="📦"
+          color="orange">
+        </app-stats-card>
+      </div>
+
+      <!-- Data Table -->
+      <app-data-table
+        [columns]="columns"
+        [data]="warehouses"
+        [actions]="actions"
+        [loading]="loading"
+        (rowClick)="onRowClick($event)">
+      </app-data-table>
+    </div>
+  </div>
+</div>
+
+<!-- Warehouse Form Modal -->
+<app-warehouse-form-modal
+  [isOpen]="isModalOpen"
+  [warehouse]="selectedWarehouse"
+  (close)="onModalClose()"
+  (save)="onWarehouseSave($event)">
+</app-warehouse-form-modal>

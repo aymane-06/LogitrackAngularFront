@@ -1,0 +1,66 @@
+<div class="dashboard-layout">
+  <app-sidebar></app-sidebar>
+  
+  <div class="main-content">
+    <app-navbar title="Suppliers Management"></app-navbar>
+    
+    <div class="content">
+      <!-- Header -->
+      <div class="page-header">
+        <div>
+          <h2 class="page-title">Suppliers</h2>
+          <p class="page-subtitle">Manage supplier relationships and contacts</p>
+        </div>
+        <button class="btn-add" (click)="addSupplier()">
+          <span class="btn-icon">➕</span>
+          <span>Add Supplier</span>
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <app-stats-card
+          title="Total Suppliers"
+          [value]="suppliers.length"
+          icon="🤝"
+          color="blue">
+        </app-stats-card>
+        <app-stats-card
+          title="Active"
+          [value]="getActiveSuppliersCount()"
+          icon="✅"
+          color="green">
+        </app-stats-card>
+        <app-stats-card
+          title="Average Rating"
+          [value]="getAverageRating()"
+          icon="⭐"
+          color="orange">
+        </app-stats-card>
+        <app-stats-card
+          title="Pending"
+          [value]="getPendingSuppliersCount()"
+          icon="⏳"
+          color="purple">
+        </app-stats-card>
+      </div>
+
+      <!-- Data Table -->
+      <app-data-table
+        [columns]="columns"
+        [data]="suppliers"
+        [actions]="actions"
+        [loading]="loading"
+        (rowClick)="onRowClick($event)">
+      </app-data-table>
+    </div>
+  </div>
+</div>
+
+<!-- Supplier Form Modal -->
+<app-supplier-form-modal
+  [isOpen]="isModalOpen"
+  [supplier]="selectedSupplier"
+  (close)="onModalClose()"
+  (save)="onSupplierSave($event)">
+</app-supplier-form-modal>

@@ -1,0 +1,36 @@
+<div class="data-table-container">
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="spinner">Loading...</div>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th *ngFor="let column of columns">{{ column.label }}</th>
+        <th *ngIf="actions.length > 0" class="actions-column">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of data" (click)="onRowClick(row)" class="table-row">
+        <td *ngFor="let column of columns">{{ getValue(row, column.key) }}</td>
+        <td *ngIf="actions.length > 0" class="actions-cell">
+          <button
+            *ngFor="let action of actions"
+            (click)="onAction(action, row, $event)"
+            class="action-btn"
+            [class.btn-primary]="action.color === 'primary'"
+            [class.btn-danger]="action.color === 'danger'"
+            [class.btn-warning]="action.color === 'warning'"
+            [title]="action.label">
+            {{ action.icon }}
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="data.length === 0 && !loading">
+        <td [attr.colspan]="columns.length + (actions.length > 0 ? 1 : 0)" class="empty-state">
+          No data available
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

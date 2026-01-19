@@ -2,9 +2,12 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { ToastService } from '../services/toast.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
+  constructor(private toastService: ToastService) {}
+
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -14,16 +17,22 @@ export class ErrorInterceptor implements HttpInterceptor {
           // Client-side error
           errorMessage = `Error: ${error.error.message}`;
         } else {
-          // Server-side error
-          if (error.error && error.error.message) {
+          // Server-side error - prioritize server message
+          if (error.error?.message) {
             errorMessage = error.error.message;
+          } else if (error.error?.error) {
+            errorMessage = error.error.error;
           } else {
+            // Fallback to generic messages
             switch (error.status) {
+              case 0:
+                errorMessage = 'Unable to connect to the server. Please check your internet connection or try again later.';
+                break;
               case 400:
                 errorMessage = 'Bad Request: Please check your input.';
                 break;
               case 401:
-                errorMessage = 'Unauthorized: Please login again.';
+                errorMessage = 'Invalid credentials. Please check your email and password.';
                 break;
               case 403:
                 errorMessage = 'Forbidden: You don\'t have permission to access this resource.';
@@ -43,7 +52,9 @@ export class ErrorInterceptor implements HttpInterceptor {
           }
         }
 
-        // You can show a toast/snackbar here
+        // Show toast notification
+        this.toastService.error(errorMessage);
+        
         console.error('API Error:', {
           status: error.status,
           message: errorMessage,

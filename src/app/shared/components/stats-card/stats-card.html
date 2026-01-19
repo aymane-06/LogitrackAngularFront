@@ -1,0 +1,15 @@
+<div class="stats-card" [class]="'stats-card--' + color">
+  <div class="stats-card-icon">
+    {{ icon }}
+  </div>
+  <div class="stats-card-content">
+    <p class="stats-card-title">{{ title }}</p>
+    <h3 class="stats-card-value">{{ value }}</h3>
+    <div class="stats-card-trend" *ngIf="trend">
+      <span [class.positive]="trend.isPositive" [class.negative]="!trend.isPositive">
+        {{ trend.isPositive ? '↑' : '↓' }} {{ trend.value }}%
+      </span>
+      <span class="trend-label">vs last month</span>
+    </div>
+  </div>
+</div>
