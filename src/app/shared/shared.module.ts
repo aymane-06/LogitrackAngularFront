@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DataTable } from './components/data-table/data-table';
 import { Modal } from './components/modal/modal';
@@ -28,6 +28,7 @@ import { WarehouseFormModal } from './components/warehouse-form-modal/warehouse-
   ],
   imports: [
     CommonModule,
+    FormsModule,
     RouterModule,
     ReactiveFormsModule
   ],
@@ -43,6 +44,7 @@ import { WarehouseFormModal } from './components/warehouse-form-modal/warehouse-
     WarehouseFormModal,
     SupplierFormModal,
     CommonModule,
+    FormsModule,
     ReactiveFormsModule
   ]
 })

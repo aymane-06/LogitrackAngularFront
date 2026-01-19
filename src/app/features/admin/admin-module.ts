@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 import { AdminRoutingModule } from './admin-routing-module';
 import { AdminDashboard } from './dashboard/admin-dashboard';
@@ -16,6 +17,7 @@ import { Warehouses } from './warehouses/warehouses';
     Suppliers
   ],
   imports: [
+    CommonModule,
     SharedModule,
     AdminRoutingModule
   ]

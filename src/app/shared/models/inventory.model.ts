@@ -1,20 +1,19 @@
+import { Product } from './product.model';
+import { Warehouse } from './warehouse.model';
+
 export interface Inventory {
-  id: number;
-  productId: number;
-  productSku: string;
-  productName: string;
-  warehouseId: number;
-  warehouseCode: string;
-  warehouseName: string;
-  qtyOnHand: number;
-  qtyReserved: number;
-  qtyAvailable: number; // qtyOnHand - qtyReserved
-  lastUpdated: string;
+  id: string;
+  product: Product;
+  warehouse: Warehouse;
+  quantity: number;
+  reorderLevel: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface InventoryAvailability {
-  productId: number;
-  warehouseId: number;
-  available: boolean;
-  qtyAvailable: number;
+export interface InventoryDTO {
+  productId: string;
+  warehouseId: string;
+  quantity: number;
+  reorderLevel: number;
 }

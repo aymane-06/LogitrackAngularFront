@@ -7,30 +7,12 @@ import { Users } from './users/users';
 import { Warehouses } from './warehouses/warehouses';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: AdminDashboard
-  },
-  {
-    path: 'dashboard',
-    component: AdminDashboard
-  },
-  {
-    path: 'users',
-    component: Users
-  },
-  {
-    path: 'products',
-    component: Products
-  },
-  {
-    path: 'warehouses',
-    component: Warehouses
-  },
-  {
-    path: 'suppliers',
-    component: Suppliers
-  }
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: 'dashboard', component: AdminDashboard },
+  { path: 'products', component: Products },
+  { path: 'warehouses', component: Warehouses },
+  { path: 'suppliers', component: Suppliers },
+  { path: 'users', component: Users }
 ];
 
 @NgModule({

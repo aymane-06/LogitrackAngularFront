@@ -1,21 +1,12 @@
 export interface Supplier {
-  id: number;
-  code: string;
+  id: string;
   name: string;
-  contactPerson: string;
-  email: string;
-  phone: string;
-  address: string;
-  active: boolean;
+  contactInfo: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface SupplierCreate {
-  code: string;
+export interface SupplierDTO {
   name: string;
-  contactPerson: string;
-  email: string;
-  phone: string;
-  address: string;
+  contactInfo: string;
 }

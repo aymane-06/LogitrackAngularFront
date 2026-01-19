@@ -5,13 +5,17 @@ export enum UserRole {
 }
 
 export interface User {
-  id: number;
+  id: number | string;
   name: string;
   email: string;
   role: UserRole;
   active: boolean;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface Client extends User {
+  contactInfo: string;
 }
 
 export interface LoginRequest {
@@ -35,4 +39,11 @@ export interface LoginResponse {
 export interface RefreshTokenResponse {
   accessToken: string;
   refreshToken: string;
+}
+
+export interface UserDTO {
+  name: string;
+  email: string;
+  role: UserRole;
+  active: boolean;
 }

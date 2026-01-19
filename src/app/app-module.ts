@@ -8,11 +8,13 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { Home } from './features/home/home';
 import { SharedModule } from './shared/shared.module';
+import { UnauthorizedComponent } from './features/unauthorized/unauthorized';
 
 @NgModule({
   declarations: [
     App,
-    Home
+    Home,
+    UnauthorizedComponent
   ],
   imports: [
     BrowserModule,

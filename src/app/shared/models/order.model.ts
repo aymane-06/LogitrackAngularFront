@@ -1,48 +1,42 @@
+import { Client } from './user.model';
+import { Product } from './product.model';
+import { Warehouse } from './warehouse.model';
+import { Shipment } from './shipment.model';
+
 export enum OrderStatus {
   CREATED = 'CREATED',
   RESERVED = 'RESERVED',
   SHIPPED = 'SHIPPED',
   DELIVERED = 'DELIVERED',
-  CANCELLED = 'CANCELLED'
+  CANCELED = 'CANCELED'
 }
 
-export interface OrderLine {
-  id?: number;
-  productId: number;
-  productSku?: string;
-  productName?: string;
+export interface SalesOrderLine {
+  id: string;
+  product: Product;
   quantity: number;
-  unitPrice?: number;
-  totalPrice?: number;
+  unitPrice: number;
 }
 
 export interface SalesOrder {
-  id: number;
-  orderNumber: string;
-  clientId: number;
-  clientName?: string;
+  id: string;
+  client: Client;
+  warehouse: Warehouse;
   status: OrderStatus;
-  warehouseId: number;
-  warehouseName?: string;
-  orderLines: OrderLine[];
-  totalAmount: number;
-  reservationTTL?: string; // ISO timestamp for reservation expiry
   createdAt: string;
-  updatedAt: string;
+  reservedAt?: string;
   shippedAt?: string;
   deliveredAt?: string;
+  lines: SalesOrderLine[];
+  shipment?: Shipment;
+  updatedAt: string;
 }
 
-export interface CreateOrderRequest {
-  warehouseId: number;
-  orderLines: OrderLine[];
-}
-
-export interface OrderSummary {
-  totalOrders: number;
-  createdCount: number;
-  reservedCount: number;
-  shippedCount: number;
-  deliveredCount: number;
-  cancelledCount: number;
+export interface SalesOrderDTO {
+  warehouseId: string;
+  lines: {
+    productId: string;
+    quantity: number;
+    unitPrice: number;
+  }[];
 }

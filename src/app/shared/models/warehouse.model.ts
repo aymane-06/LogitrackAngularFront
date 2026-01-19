@@ -1,22 +1,25 @@
+import { Inventory } from './inventory.model';
+import { User } from './user.model';
+
+export interface WarehouseManager extends User {
+  // Additional warehouse manager specific fields if needed
+}
+
 export interface Warehouse {
-  id: number;
+  id: string;
   code: string;
   name: string;
-  address: string;
-  city: string;
-  capacity: number;
-  managerId?: number;
-  managerName?: string;
+  location: string;
   active: boolean;
+  warehouseManager?: WarehouseManager;
+  inventories?: Inventory[];
   createdAt: string;
   updatedAt: string;
 }
 
-export interface WarehouseCreate {
-  code: string;
+export interface WarehouseDTO {
   name: string;
-  address: string;
-  city: string;
-  capacity: number;
-  managerId?: number;
+  location: string;
+  warehouseManagerId: string;
+  active: boolean;
 }
