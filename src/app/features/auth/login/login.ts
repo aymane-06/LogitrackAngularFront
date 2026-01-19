@@ -31,14 +31,19 @@ export class Login implements OnInit {
   }
 
   ngOnInit(): void {
+    // Get return URL from query params FIRST
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    
     // Check if already logged in
     if (this.authService.isAuthenticated()) {
-      this.authService.navigateToDashboard();
+      // If there's a returnUrl, use it, otherwise navigate to dashboard
+      if (this.returnUrl && this.returnUrl !== '/') {
+        this.router.navigate([this.returnUrl], { replaceUrl: true });
+      } else {
+        this.authService.navigateToDashboard();
+      }
       return;
     }
-
-    // Get return URL from query params
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   // Getter for easy access to form controls
@@ -65,7 +70,7 @@ export class Login implements OnInit {
         this.loading = false;
         // Navigate based on returnUrl or user role
         if (this.returnUrl && this.returnUrl !== '/') {
-          this.router.navigate([this.returnUrl]);
+          this.router.navigate([this.returnUrl], { replaceUrl: true });
         } else {
           this.authService.navigateToDashboard();
         }

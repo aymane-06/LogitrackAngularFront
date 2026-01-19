@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TableAction, TableColumn } from '../../../shared/components/data-table/data-table';
+import { TableAction, TableColumn } from '../../../shared/components/data-table.component';
 
 interface Product {
   id?: number;
@@ -31,9 +31,9 @@ export class Products implements OnInit {
   ];
 
   actions: TableAction[] = [
-    { label: 'Edit', icon: '✏️', action: (row) => this.editProduct(row), color: 'primary' },
-    { label: 'View', icon: '👁️', action: (row) => this.viewProduct(row), color: 'warning' },
-    { label: 'Delete', icon: '🗑️', action: (row) => this.deleteProduct(row), color: 'danger' }
+    { label: 'Edit', icon: '✏️', handler: (row: any) => this.editProduct(row), class: 'text-blue-600' },
+    { label: 'View', icon: '👁️', handler: (row: any) => this.viewProduct(row), class: 'text-yellow-600' },
+    { label: 'Delete', icon: '🗑️', handler: (row: any) => this.deleteProduct(row), class: 'text-red-600' }
   ];
 
   products: Product[] = [

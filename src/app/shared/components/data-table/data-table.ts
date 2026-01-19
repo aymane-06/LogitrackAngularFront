@@ -8,13 +8,13 @@ export interface TableColumn {
 
 export interface TableAction {
   label: string;
-  icon: string;
-  action: (row: any) => void;
-  color?: 'primary' | 'danger' | 'warning';
+  icon?: string;
+  handler: (row: any) => void;
+  class?: string;
 }
 
 @Component({
-  selector: 'app-data-table',
+  selector: 'app-data-table-old',
   templateUrl: './data-table.html',
   styleUrls: ['./data-table.css'],
   standalone: false
@@ -32,7 +32,7 @@ export class DataTable {
 
   onAction(action: TableAction, row: any, event: Event): void {
     event.stopPropagation();
-    action.action(row);
+    action.handler(row);
   }
 
   getValue(row: any, key: string): any {

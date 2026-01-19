@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { DataTable } from './components/data-table/data-table';
+import { DataTableComponent } from './components/data-table.component';
+import { LoadingSpinnerComponent } from './components/loading-spinner.component';
 import { Modal } from './components/modal/modal';
 import { Navbar } from './components/navbar/navbar';
 import { ProductFormModal } from './components/product-form-modal/product-form-modal';
@@ -19,7 +20,8 @@ import { WarehouseFormModal } from './components/warehouse-form-modal/warehouse-
     Navbar,
     StatsCard,
     ToastComponent,
-    DataTable,
+    DataTableComponent,
+    LoadingSpinnerComponent,
     Modal,
     UserFormModal,
     ProductFormModal,
@@ -37,7 +39,8 @@ import { WarehouseFormModal } from './components/warehouse-form-modal/warehouse-
     Navbar,
     StatsCard,
     ToastComponent,
-    DataTable,
+    DataTableComponent,
+    LoadingSpinnerComponent,
     Modal,
     UserFormModal,
     ProductFormModal,

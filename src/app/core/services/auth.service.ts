@@ -90,7 +90,15 @@ export class AuthService {
    * Get current user
    */
   getCurrentUser(): User | null {
-    return this.currentUserSubject.value;
+    let user = this.currentUserSubject.value;
+    // If no user in memory but tokens exist in storage, load from storage
+    if (!user && this.tokenService.isLoggedIn()) {
+      user = this.tokenService.getUser();
+      if (user) {
+        this.currentUserSubject.next(user);
+      }
+    }
+    return user;
   }
 
   /**

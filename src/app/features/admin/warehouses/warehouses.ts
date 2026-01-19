@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TableAction, TableColumn } from '../../../shared/components/data-table/data-table';
+import { TableAction, TableColumn } from '../../../shared/components/data-table.component';
 
 interface Warehouse {
   id?: number;
@@ -31,9 +31,9 @@ export class Warehouses implements OnInit {
   ];
 
   actions: TableAction[] = [
-    { label: 'Edit', icon: '✏️', action: (row) => this.editWarehouse(row), color: 'primary' },
-    { label: 'View', icon: '👁️', action: (row) => this.viewWarehouse(row), color: 'warning' },
-    { label: 'Delete', icon: '🗑️', action: (row) => this.deleteWarehouse(row), color: 'danger' }
+    { label: 'Edit', icon: '✏️', handler: (row: any) => this.editWarehouse(row), class: 'text-blue-600' },
+    { label: 'View', icon: '👁️', handler: (row: any) => this.viewWarehouse(row), class: 'text-yellow-600' },
+    { label: 'Delete', icon: '🗑️', handler: (row: any) => this.deleteWarehouse(row), class: 'text-red-600' }
   ];
 
   warehouses: Warehouse[] = [

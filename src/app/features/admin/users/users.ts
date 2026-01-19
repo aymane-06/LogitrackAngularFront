@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TableAction, TableColumn } from '../../../shared/components/data-table/data-table';
+import { TableAction, TableColumn } from '../../../shared/components/data-table.component';
 
 interface User {
   id?: number;
@@ -27,8 +27,8 @@ export class Users implements OnInit {
   ];
 
   actions: TableAction[] = [
-    { label: 'Edit', icon: '✏️', action: (row) => this.editUser(row), color: 'primary' },
-    { label: 'Delete', icon: '🗑️', action: (row) => this.deleteUser(row), color: 'danger' }
+    { label: 'Edit', icon: '✏️', handler: (row: any) => this.editUser(row), class: 'text-blue-600' },
+    { label: 'Delete', icon: '🗑️', handler: (row: any) => this.deleteUser(row), class: 'text-red-600' }
   ];
 
   users: User[] = [

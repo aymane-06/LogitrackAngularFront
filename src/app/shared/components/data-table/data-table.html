@@ -17,10 +17,7 @@
           <button
             *ngFor="let action of actions"
             (click)="onAction(action, row, $event)"
-            class="action-btn"
-            [class.btn-primary]="action.color === 'primary'"
-            [class.btn-danger]="action.color === 'danger'"
-            [class.btn-warning]="action.color === 'warning'"
+            [class]="'action-btn ' + (action.class || '')"
             [title]="action.label">
             {{ action.icon }}
           </button>
