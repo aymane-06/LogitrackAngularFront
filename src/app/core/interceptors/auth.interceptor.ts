@@ -17,7 +17,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Skip interceptor for auth endpoints
-    if (request.url.includes('/auth/login') || request.url.includes('/auth/register')) {
+    if (request.url.includes('/auth/login') || request.url.includes('/auth/register') || request.url.includes('/auth/refresh-token')) {
       return next.handle(request);
     }
 

@@ -1,15 +1,14 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UserService } from '../../../core/services/user.service';
+import { User, UserRole } from '../../models/user.model';
 
 interface Warehouse {
   id?: number;
   name: string;
-  code: string;
   location: string;
-  capacity: number;
-  currentStock: number;
-  manager: string;
-  status: string;
+  warehouseManagerId: string;
+  active: boolean;
 }
 
 @Component({
@@ -20,43 +19,59 @@ interface Warehouse {
 })
 export class WarehouseFormModal implements OnInit {
   @Input() isOpen = false;
-  @Input() warehouse?: Warehouse;
+  @Input() warehouse?: any;
   @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<Warehouse>();
+  @Output() save = new EventEmitter<any>();
 
   warehouseForm!: FormGroup;
   isEditMode = false;
 
+  managers: User[] = [];
   statuses = ['Active', 'Inactive', 'Nearly Full', 'Maintenance'];
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private userService: UserService
+  ) {
     this.warehouseForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
-      code: ['', [Validators.required, Validators.pattern(/^WH-\d{3}$/)]],
       location: ['', [Validators.required]],
-      capacity: [0, [Validators.required, Validators.min(1)]],
-      currentStock: [0, [Validators.required, Validators.min(0)]],
-      manager: ['', [Validators.required]],
-      status: ['Active', Validators.required]
+      warehouseManagerId: ['', [Validators.required]],
+      active: [true, Validators.required]
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadManagers();
+  }
+
+  loadManagers(): void {
+    this.userService.getAll().subscribe({
+      next: (users) => {
+        this.managers = users.filter(user => user.role === UserRole.WAREHOUSE_MANAGER);
+        // If creating new and managers exist, select first
+        if (this.managers.length > 0 && !this.warehouse) {
+          this.warehouseForm.patchValue({ warehouseManagerId: this.managers[0].id });
+        }
+      },
+      error: (err) => console.error('Failed to load managers', err)
+    });
+  }
 
   ngOnChanges(): void {
     if (this.warehouse) {
       this.isEditMode = true;
-      this.warehouseForm.patchValue(this.warehouse);
+      this.warehouseForm.patchValue({
+        ...this.warehouse,
+        warehouseManagerId: this.warehouse.warehouseManager?.id
+      });
     } else {
       this.isEditMode = false;
       this.warehouseForm.reset({
         name: '',
-        code: '',
         location: '',
-        capacity: 0,
-        currentStock: 0,
-        manager: '',
-        status: 'Active'
+        warehouseManagerId: '',
+        active: true
       });
     }
   }
@@ -80,13 +95,6 @@ export class WarehouseFormModal implements OnInit {
     const field = this.warehouseForm.get(fieldName);
     if (field?.hasError('required')) {
       return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
-    }
-    if (field?.hasError('pattern')) {
-      return 'Code must be in format: WH-000 (e.g., WH-001)';
-    }
-    if (field?.hasError('min')) {
-      const minValue = field.errors?.['min'].min;
-      return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} must be at least ${minValue}`;
     }
     if (field?.hasError('minlength')) {
       return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} must be at least ${field.errors?.['minlength'].requiredLength} characters`;

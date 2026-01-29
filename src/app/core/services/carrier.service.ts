@@ -30,7 +30,7 @@ export class CarrierService {
    * Create new carrier (ADMIN only)
    */
   create(carrier: CarrierDTO): Observable<Carrier> {
-    return this.http.post<Carrier>(this.API_URL, carrier);
+    return this.http.post<Carrier>(`${this.API_URL}/add`, carrier);
   }
 
   /**

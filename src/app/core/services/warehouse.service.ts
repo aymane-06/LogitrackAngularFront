@@ -20,10 +20,10 @@ export class WarehouseService {
   }
 
   /**
-   * Get warehouse by ID
+   * Get warehouse by Code
    */
-  getById(id: string): Observable<Warehouse> {
-    return this.http.get<Warehouse>(`${this.API_URL}/${id}`);
+  getByCode(code: string): Observable<Warehouse> {
+    return this.http.get<Warehouse>(`${this.API_URL}/${code}`);
   }
 
   /**
@@ -36,14 +36,14 @@ export class WarehouseService {
   /**
    * Update warehouse (ADMIN only)
    */
-  update(id: string, warehouse: WarehouseDTO): Observable<Warehouse> {
-    return this.http.put<Warehouse>(`${this.API_URL}/${id}`, warehouse);
+  update(code: string, warehouse: WarehouseDTO): Observable<Warehouse> {
+    return this.http.put<Warehouse>(`${this.API_URL}/${code}`, warehouse);
   }
 
   /**
    * Delete warehouse (ADMIN only)
    */
-  delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`);
+  delete(code: string): Observable<string> {
+    return this.http.delete(`${this.API_URL}/${code}`, { responseType: 'text' });
   }
 }

@@ -16,7 +16,7 @@ export class PurchaseOrderService {
    * Get all purchase orders (ADMIN, WAREHOUSE_MANAGER)
    */
   getAll(): Observable<PurchaseOrder[]> {
-    return this.http.get<PurchaseOrder[]>(this.API_URL);
+    return this.http.get<PurchaseOrder[]>(`${this.API_URL}/all`);
   }
 
   /**
@@ -30,27 +30,27 @@ export class PurchaseOrderService {
    * Create new purchase order (ADMIN, WAREHOUSE_MANAGER)
    */
   create(purchaseOrder: PurchaseOrderDTO): Observable<PurchaseOrder> {
-    return this.http.post<PurchaseOrder>(this.API_URL, purchaseOrder);
+    return this.http.post<PurchaseOrder>(`${this.API_URL}/create`, purchaseOrder);
   }
 
   /**
-   * Approve purchase order (ADMIN, WAREHOUSE_MANAGER)
+   * Update purchase order status (ADMIN only)
    */
-  approve(id: string): Observable<PurchaseOrder> {
-    return this.http.put<PurchaseOrder>(`${this.API_URL}/${id}/approve`, {});
+  updateStatus(id: string, status: string): Observable<PurchaseOrder> {
+    return this.http.patch<PurchaseOrder>(`${environment.apiUrl}/admins/purchaseOrder-status/update/${id}`, { status });
   }
 
   /**
-   * Receive purchase order (ADMIN, WAREHOUSE_MANAGER)
+   * Update purchase order
    */
-  receive(id: string): Observable<PurchaseOrder> {
-    return this.http.put<PurchaseOrder>(`${this.API_URL}/${id}/receive`, {});
+  update(id: string, purchaseOrder: PurchaseOrderDTO): Observable<PurchaseOrder> {
+      return this.http.put<PurchaseOrder>(`${this.API_URL}/update/${id}`, purchaseOrder);
   }
 
   /**
    * Delete purchase order (ADMIN)
    */
   delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`);
+    return this.http.delete<void>(`${this.API_URL}/delete/${id}`);
   }
 }

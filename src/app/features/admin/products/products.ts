@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, afterNextRender } from '@angular/core';
+import { ProductService } from '../../../core/services/product.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { TableAction, TableColumn } from '../../../shared/components/data-table.component';
+import { Product } from '../../../shared/models/product.model';
 
-interface Product {
-  id?: number;
-  name: string;
-  sku: string;
-  category: string;
-  price: number;
-  stock: number;
-  warehouse: string;
-  status: string;
+// Extended interface for UI - includes fields not in backend model
+interface ProductUI extends Product {
+  price?: number;
+  stock?: number;
+  warehouse?: string;
+  status?: string;
 }
 
 @Component({
@@ -20,7 +20,7 @@ interface Product {
 })
 export class Products implements OnInit {
   columns: TableColumn[] = [
-    { key: 'id', label: 'ID', sortable: true },
+
     { key: 'name', label: 'Product Name', sortable: true },
     { key: 'sku', label: 'SKU', sortable: true },
     { key: 'category', label: 'Category', sortable: true },
@@ -36,19 +36,45 @@ export class Products implements OnInit {
     { label: 'Delete', icon: '🗑️', handler: (row: any) => this.deleteProduct(row), class: 'text-red-600' }
   ];
 
-  products: Product[] = [
-    { id: 1, name: 'Laptop Pro', sku: 'LAP-001', category: 'Electronics', price: 1299.99, stock: 45, warehouse: 'Main Warehouse', status: 'In Stock' },
-    { id: 2, name: 'Office Chair', sku: 'FUR-002', category: 'Furniture', price: 299.99, stock: 120, warehouse: 'North Warehouse', status: 'In Stock' },
-    { id: 3, name: 'Smartphone X', sku: 'PHO-003', category: 'Electronics', price: 899.99, stock: 5, warehouse: 'Main Warehouse', status: 'Low Stock' },
-    { id: 4, name: 'Desk Lamp', sku: 'LIT-004', category: 'Lighting', price: 49.99, stock: 0, warehouse: 'South Warehouse', status: 'Out of Stock' }
-  ];
+  products: ProductUI[] = [];
 
   loading = false;
   isModalOpen = false;
-  selectedProduct?: Product;
+  selectedProduct?: ProductUI;
+
+  constructor(
+    private productService: ProductService,
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
+  ) {
+    afterNextRender(() => {
+      this.loadProducts();
+    });
+  }
 
   ngOnInit(): void {
-    // Load products from API
+  }
+
+  loadProducts(): void {
+    this.loading = true;
+    this.productService.getAll().subscribe({
+      next: (products: any[]) => {
+        this.products = products.map(p => ({
+          ...p,
+          price: p.boughtPrice,
+          stock: 0, // Not available in Product DTO
+          warehouse: 'Multiple', // Not available in Product DTO
+          status: p.active ? 'Active' : 'Inactive'
+        }));
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading products:', error);
+        this.toastService.error('Failed to load products');
+        this.loading = false;
+      }
+    });
   }
 
   getInStockCount(): number {
@@ -63,24 +89,40 @@ export class Products implements OnInit {
     return this.products.filter(p => p.status === 'Out of Stock').length;
   }
 
-  editProduct(product: Product): void {
+  editProduct(product: ProductUI): void {
     this.selectedProduct = product;
     this.isModalOpen = true;
   }
 
-  viewProduct(product: Product): void {
+  viewProduct(product: ProductUI): void {
     console.log('View product:', product);
     // Navigate to product detail page
   }
 
-  deleteProduct(product: Product): void {
+  deleteProduct(product: ProductUI): void {
     if (confirm(`Are you sure you want to delete ${product.name}?`)) {
-      this.products = this.products.filter(p => p.id !== product.id);
-      console.log('Product deleted:', product);
+      if (!product.sku) {
+        this.toastService.error('Cannot delete product: SKU is missing');
+        return;
+      }
+      this.loading = true;
+      this.productService.delete(product.sku).subscribe({
+        next: () => {
+          this.products = this.products.filter(p => p.sku !== product.sku);
+          this.toastService.success('Product deleted successfully');
+          this.loading = false;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error deleting product:', error);
+          this.toastService.error('Failed to delete product');
+          this.loading = false;
+        }
+      });
     }
   }
 
-  onRowClick(product: Product): void {
+  onRowClick(product: ProductUI): void {
     console.log('Product clicked:', product);
     // Navigate to product detail page
   }
@@ -95,22 +137,58 @@ export class Products implements OnInit {
     this.selectedProduct = undefined;
   }
 
-  onProductSave(product: Product): void {
+  onProductSave(product: any): void {
+    this.loading = true;
+    
     if (product.id) {
-      // Update existing product
-      const index = this.products.findIndex(p => p.id === product.id);
-      if (index !== -1) {
-        this.products[index] = product;
-      }
-    } else {
-      // Create new product
-      const maxId = Math.max(0, ...this.products.map(p => p.id || 0));
-      const newProduct = {
-        ...product,
-        id: maxId + 1
+      // Update existing product - map UI fields to DTO
+      const productDTO = { 
+        name: product.name, 
+        category: product.category, 
+        boughtPrice: product.price || 0, 
+        active: product.status === 'In Stock' 
       };
-      this.products = [...this.products, newProduct];
+      // Use SKU if available, otherwise fallback to ID (though backend expects SKU)
+      const identifier = product.sku || product.id;
+      this.productService.update(identifier, productDTO).subscribe({
+        next: (updatedProduct) => {
+          const index = this.products.findIndex(p => p.id === product.id);
+          if (index !== -1) {
+            // Preserve UI fields
+            this.products[index] = { ...product, ...updatedProduct };
+          }
+          this.toastService.success('Product updated successfully');
+          this.onModalClose();
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error updating product:', error);
+          this.toastService.error('Failed to update product');
+          this.loading = false;
+        }
+      });
+    } else {
+      // Create new product - map UI fields to DTO
+      const productDTO = { 
+        name: product.name, 
+        category: product.category, 
+        boughtPrice: product.price || 0, 
+        active: true 
+      };
+      this.productService.create(productDTO).subscribe({
+        next: (newProduct) => {
+          // Combine backend response with UI fields
+          this.products = [...this.products, { ...product, ...newProduct }];
+          this.toastService.success('Product created successfully');
+          this.onModalClose();
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error creating product:', error);
+          this.toastService.error('Failed to create product');
+          this.loading = false;
+        }
+      });
     }
-    this.onModalClose();
   }
 }

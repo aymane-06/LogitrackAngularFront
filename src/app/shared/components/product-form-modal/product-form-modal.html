@@ -5,32 +5,17 @@
   (close)="onClose()">
   
   <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Product Name *</label>
-        <input
-          type="text"
-          class="form-input"
-          formControlName="name"
-          placeholder="Enter product name"
-          [class.error]="productForm.get('name')?.invalid && productForm.get('name')?.touched">
-        <span class="error-message" *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched">
-          {{ getFieldError('name') }}
-        </span>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">SKU *</label>
-        <input
-          type="text"
-          class="form-input"
-          formControlName="sku"
-          placeholder="e.g., LAP-001"
-          [class.error]="productForm.get('sku')?.invalid && productForm.get('sku')?.touched">
-        <span class="error-message" *ngIf="productForm.get('sku')?.invalid && productForm.get('sku')?.touched">
-          {{ getFieldError('sku') }}
-        </span>
-      </div>
+    <div class="form-group">
+      <label class="form-label">Product Name *</label>
+      <input
+        type="text"
+        class="form-input"
+        formControlName="name"
+        placeholder="Enter product name"
+        [class.error]="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+      <span class="error-message" *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+        {{ getFieldError('name') }}
+      </span>
     </div>
 
     <div class="form-row">
@@ -73,7 +58,7 @@
       <div class="form-group">
         <label class="form-label">Warehouse *</label>
         <select class="form-input" formControlName="warehouse">
-          <option *ngFor="let wh of warehouses" [value]="wh">{{ wh }}</option>
+          <option *ngFor="let wh of warehouses" [value]="wh.name">{{ wh.name }}</option>
         </select>
       </div>
     </div>

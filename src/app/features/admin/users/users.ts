@@ -1,14 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, afterNextRender } from '@angular/core';
+import { ToastService } from '../../../core/services/toast.service';
+import { UserService } from '../../../core/services/user.service';
 import { TableAction, TableColumn } from '../../../shared/components/data-table.component';
-
-interface User {
-  id?: number;
-  name: string;
-  email: string;
-  role: string;
-  active: boolean;
-  createdAt?: string;
-}
+import { User } from '../../../shared/models/user.model';
 
 @Component({
   selector: 'app-users',
@@ -18,7 +12,6 @@ interface User {
 })
 export class Users implements OnInit {
   columns: TableColumn[] = [
-    { key: 'id', label: 'ID', sortable: true },
     { key: 'name', label: 'Name', sortable: true },
     { key: 'email', label: 'Email', sortable: true },
     { key: 'role', label: 'Role', sortable: true },
@@ -31,18 +24,39 @@ export class Users implements OnInit {
     { label: 'Delete', icon: '🗑️', handler: (row: any) => this.deleteUser(row), class: 'text-red-600' }
   ];
 
-  users: User[] = [
-    { id: 1, name: 'John Doe', email: 'john@example.com', role: 'ADMIN', active: true, createdAt: '2024-01-15' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'WAREHOUSE_MANAGER', active: true, createdAt: '2024-01-20' },
-    { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'CLIENT', active: false, createdAt: '2024-02-10' }
-  ];
+  users: User[] = [];
 
   loading = false;
   isModalOpen = false;
   selectedUser?: User;
 
+  constructor(
+    private userService: UserService,
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
+  ) {
+    afterNextRender(() => {
+      this.loadUsers();
+    });
+  }
+
   ngOnInit(): void {
-    // Load users from API
+  }
+
+  loadUsers(): void {
+    this.loading = true;
+    this.userService.getAll().subscribe({
+      next: (users) => {
+        this.users = users;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('UsersComponent: Error loading users', error);
+        this.toastService.error('Failed to load users');
+        this.loading = false;
+      }
+    });
   }
 
   getActiveUsersCount(): number {
@@ -64,14 +78,25 @@ export class Users implements OnInit {
 
   deleteUser(user: User): void {
     if (confirm(`Are you sure you want to delete ${user.name}?`)) {
-      this.users = this.users.filter(u => u.id !== user.id);
-      console.log('User deleted:', user);
+      this.loading = true;
+      this.userService.delete(String(user.id!)).subscribe({
+        next: () => {
+          this.users = this.users.filter(u => u.id !== user.id);
+          this.toastService.success('User deleted successfully');
+          this.loading = false;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error deleting user:', error);
+          this.toastService.error('Failed to delete user');
+          this.loading = false;
+        }
+      });
     }
   }
 
   onRowClick(user: User): void {
     console.log('User clicked:', user);
-    // Navigate to user detail page
   }
 
   addUser(): void {
@@ -85,21 +110,41 @@ export class Users implements OnInit {
   }
 
   onUserSave(user: User): void {
+    this.loading = true;
+    
     if (user.id) {
       // Update existing user
-      const index = this.users.findIndex(u => u.id === user.id);
-      if (index !== -1) {
-        this.users[index] = { ...user, createdAt: this.users[index].createdAt };
-      }
+      this.userService.update(String(user.id), user).subscribe({
+        next: (updatedUser) => {
+          const index = this.users.findIndex(u => u.id === user.id);
+          if (index !== -1) {
+            this.users[index] = updatedUser;
+          }
+          this.toastService.success('User updated successfully');
+          this.onModalClose();
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error updating user:', error);
+          this.toastService.error('Failed to update user');
+          this.loading = false;
+        }
+      });
     } else {
       // Create new user
-      const maxId = Math.max(0, ...this.users.map(u => u.id || 0));
-      const newUser = {
-        ...user,
-        id: maxId + 1,
-        createdAt: new Date().toISOString().split('T')[0]
-      };
-      this.users = [...this.users, newUser];
+      this.userService.create(user).subscribe({
+        next: (newUser) => {
+          this.users = [...this.users, newUser];
+          this.toastService.success('User created successfully');
+          this.onModalClose();
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error creating user:', error);
+          this.toastService.error('Failed to create user');
+          this.loading = false;
+        }
+      });
     }
     this.onModalClose();
   }

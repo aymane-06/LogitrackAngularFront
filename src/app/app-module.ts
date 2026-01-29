@@ -1,10 +1,10 @@
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { APP_INITIALIZER, NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule, provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
 import { App } from './app';
 import { AppRoutingModule } from './app-routing-module';
-import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { authInterceptor } from './core/interceptors/auth.interceptor.fn';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { AuthService } from './core/services/auth.service';
 import { Home } from './features/home/home';
@@ -27,15 +27,13 @@ export function initializeApp(authService: AuthService) {
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
     AppRoutingModule,
     SharedModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideClientHydration(withEventReplay()),
-    { provide: APP_INITIALIZER, useFactory: initializeApp, deps: [AuthService], multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    provideHttpClient(withInterceptors([authInterceptor])),
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
   bootstrap: [App]

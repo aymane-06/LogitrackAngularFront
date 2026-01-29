@@ -20,10 +20,10 @@ export class ProductService {
   }
 
   /**
-   * Get product by ID
+   * Get product by SKU
    */
-  getById(id: string): Observable<Product> {
-    return this.http.get<Product>(`${this.API_URL}/${id}`);
+  getBySku(sku: string): Observable<Product> {
+    return this.http.get<Product>(`${this.API_URL}/${sku}`);
   }
 
   /**
@@ -36,14 +36,14 @@ export class ProductService {
   /**
    * Update product (ADMIN only)
    */
-  update(id: string, product: ProductDTO): Observable<Product> {
-    return this.http.put<Product>(`${this.API_URL}/${id}`, product);
+  update(sku: string, product: ProductDTO): Observable<Product> {
+    return this.http.put<Product>(`${this.API_URL}/${sku}`, product);
   }
 
   /**
    * Delete product (ADMIN only)
    */
-  delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`);
+  delete(sku: string): Observable<string> {
+    return this.http.delete(`${this.API_URL}/${sku}`, { responseType: 'text' });
   }
 }

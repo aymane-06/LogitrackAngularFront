@@ -4,13 +4,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 interface Supplier {
   id?: number;
   name: string;
-  code: string;
-  contact: string;
-  email: string;
-  phone: string;
-  category: string;
-  rating: number;
-  status: string;
+  contactInfo: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 @Component({
@@ -21,9 +17,9 @@ interface Supplier {
 })
 export class SupplierFormModal implements OnInit {
   @Input() isOpen = false;
-  @Input() supplier?: Supplier;
+  @Input() supplier?: any;
   @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<Supplier>();
+  @Output() save = new EventEmitter<any>();
 
   supplierForm!: FormGroup;
   isEditMode = false;
@@ -34,13 +30,7 @@ export class SupplierFormModal implements OnInit {
   constructor(private fb: FormBuilder) {
     this.supplierForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
-      code: ['', [Validators.required, Validators.pattern(/^SUP-\d{3}$/)]],
-      contact: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern(/^\+?1?-?\d{3}-?\d{3}-?\d{4}$/)]],
-      category: ['Electronics', Validators.required],
-      rating: [5, [Validators.required, Validators.min(0), Validators.max(5)]],
-      status: ['Active', Validators.required]
+      contactInfo: ['', [Validators.maxLength(500)]]
     });
   }
 
@@ -54,13 +44,7 @@ export class SupplierFormModal implements OnInit {
       this.isEditMode = false;
       this.supplierForm.reset({
         name: '',
-        code: '',
-        contact: '',
-        email: '',
-        phone: '',
-        category: 'Electronics',
-        rating: 5,
-        status: 'Active'
+        contactInfo: ''
       });
     }
   }
@@ -85,25 +69,11 @@ export class SupplierFormModal implements OnInit {
     if (field?.hasError('required')) {
       return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
     }
-    if (field?.hasError('email')) {
-      return 'Invalid email format';
-    }
-    if (field?.hasError('pattern')) {
-      if (fieldName === 'code') {
-        return 'Code must be in format: SUP-000 (e.g., SUP-001)';
-      }
-      if (fieldName === 'phone') {
-        return 'Phone must be in format: +1-555-0100 or 555-555-5555';
-      }
-    }
-    if (field?.hasError('min')) {
-      return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} must be at least ${field.errors?.['min'].min}`;
-    }
-    if (field?.hasError('max')) {
-      return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} must be at most ${field.errors?.['max'].max}`;
-    }
     if (field?.hasError('minlength')) {
       return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} must be at least ${field.errors?.['minlength'].requiredLength} characters`;
+    }
+    if (field?.hasError('maxlength')) {
+      return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} must be at most ${field.errors?.['maxlength'].requiredLength} characters`;
     }
     return '';
   }

@@ -1,1 +1,37 @@
-<p>purchase-orders works!</p>
+<div class="container">
+  <h2>Purchase Orders</h2>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <table *ngIf="!loading && !error" class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Supplier</th>
+        <th>Warehouse</th>
+        <th>Expected Delivery</th>
+        <th>Status</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of purchaseOrders">
+        <td>{{ order.id }}</td>
+        <td>{{ order.supplier?.name || 'N/A' }}</td>
+        <td>{{ order.warehouse?.name || 'N/A' }}</td>
+        <td>{{ order.expectedDelivery | date }}</td>
+        <td><span [class]="'status-badge ' + order.status.toLowerCase()">{{ order.status }}</span></td>
+        <td>{{ order.createdAt | date:'short' }}</td>
+        <td>
+          <!-- Actions like view/edit usually go here -->
+          <button class="btn btn-sm btn-info">View</button>
+        </td>
+      </tr>
+      <tr *ngIf="purchaseOrders.length === 0">
+        <td colspan="7">No purchase orders found.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

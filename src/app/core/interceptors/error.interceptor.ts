@@ -13,7 +13,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         let errorMessage = 'An unknown error occurred!';
         
-        if (error.error instanceof ErrorEvent) {
+        if (typeof ErrorEvent !== 'undefined' && error.error instanceof ErrorEvent) {
           // Client-side error
           errorMessage = `Error: ${error.error.message}`;
         } else {

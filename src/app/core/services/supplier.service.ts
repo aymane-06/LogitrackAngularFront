@@ -43,7 +43,7 @@ export class SupplierService {
   /**
    * Delete supplier (ADMIN only)
    */
-  delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`);
+  delete(id: string): Observable<string> {
+    return this.http.delete(`${this.API_URL}/${id}`, { responseType: 'text' });
   }
 }

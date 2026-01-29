@@ -29,8 +29,11 @@ export class SalesOrderService {
   /**
    * Create new sales order (ADMIN, CLIENT)
    */
+  /**
+   * Create new sales order (ADMIN, CLIENT)
+   */
   create(salesOrder: SalesOrderDTO): Observable<SalesOrder> {
-    return this.http.post<SalesOrder>(this.API_URL, salesOrder);
+    return this.http.post<SalesOrder>(`${this.API_URL}/create`, salesOrder);
   }
 
   /**
@@ -43,8 +46,8 @@ export class SalesOrderService {
   /**
    * Ship sales order (ADMIN, WAREHOUSE_MANAGER)
    */
-  ship(id: string): Observable<SalesOrder> {
-    return this.http.put<SalesOrder>(`${this.API_URL}/${id}/ship`, {});
+  ship(id: string, carrierId: string): Observable<SalesOrder> {
+    return this.http.put<SalesOrder>(`${this.API_URL}/${id}/ship`, { carrierId });
   }
 
   /**
@@ -52,12 +55,5 @@ export class SalesOrderService {
    */
   deliver(id: string): Observable<SalesOrder> {
     return this.http.put<SalesOrder>(`${this.API_URL}/${id}/deliver`, {});
-  }
-
-  /**
-   * Delete sales order (ADMIN)
-   */
-  delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`);
   }
 }

@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, afterNextRender } from '@angular/core';
+import { SupplierService } from '../../../core/services/supplier.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { TableAction, TableColumn } from '../../../shared/components/data-table.component';
+import { Supplier } from '../../../shared/models/supplier.model';
 
-interface Supplier {
-  id?: number;
-  name: string;
-  code: string;
-  contact: string;
-  email: string;
-  phone: string;
-  category: string;
-  rating: number;
-  status: string;
+// Extended interface for UI - includes fields not in backend model
+interface SupplierUI extends Supplier {
+  code?: string;
+  contact?: string;
+  email?: string;
+  phone?: string;
+  category?: string;
+  rating?: number;
+  status?: string;
 }
 
 @Component({
@@ -21,7 +23,7 @@ interface Supplier {
 })
 export class Suppliers implements OnInit {
   columns: TableColumn[] = [
-    { key: 'id', label: 'ID', sortable: true },
+
     { key: 'name', label: 'Supplier Name', sortable: true },
     { key: 'code', label: 'Code', sortable: true },
     { key: 'contact', label: 'Contact Person', sortable: true },
@@ -38,19 +40,39 @@ export class Suppliers implements OnInit {
     { label: 'Delete', icon: '🗑️', handler: (row: any) => this.deleteSupplier(row), class: 'text-red-600' }
   ];
 
-  suppliers: Supplier[] = [
-    { id: 1, name: 'Tech Solutions Inc.', code: 'SUP-001', contact: 'Robert Wilson', email: 'robert@techsolutions.com', phone: '+1-555-0101', category: 'Electronics', rating: 4.8, status: 'Active' },
-    { id: 2, name: 'Office Furniture Co.', code: 'SUP-002', contact: 'Linda Martinez', email: 'linda@officefurniture.com', phone: '+1-555-0102', category: 'Furniture', rating: 4.5, status: 'Active' },
-    { id: 3, name: 'Global Logistics Ltd.', code: 'SUP-003', contact: 'James Anderson', email: 'james@globallogistics.com', phone: '+1-555-0103', category: 'Logistics', rating: 4.2, status: 'Active' },
-    { id: 4, name: 'Smart Devices Corp.', code: 'SUP-004', contact: 'Maria Garcia', email: 'maria@smartdevices.com', phone: '+1-555-0104', category: 'Electronics', rating: 3.9, status: 'Pending' }
-  ];
+  suppliers: SupplierUI[] = [];
 
   loading = false;
   isModalOpen = false;
-  selectedSupplier?: Supplier;
+  selectedSupplier?: SupplierUI;
+
+  constructor(
+    private supplierService: SupplierService,
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
+  ) {
+    afterNextRender(() => {
+      this.loadSuppliers();
+    });
+  }
 
   ngOnInit(): void {
-    // Load suppliers from API
+  }
+
+  loadSuppliers(): void {
+    this.loading = true;
+    this.supplierService.getAll().subscribe({
+      next: (suppliers) => {
+        this.suppliers = suppliers;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading suppliers:', error);
+        this.toastService.error('Failed to load suppliers');
+        this.loading = false;
+      }
+    });
   }
 
   getActiveSuppliersCount(): number {
@@ -61,20 +83,32 @@ export class Suppliers implements OnInit {
     return this.suppliers.filter(s => s.status === 'Pending').length;
   }
 
-  editSupplier(supplier: Supplier): void {
+  editSupplier(supplier: SupplierUI): void {
     this.selectedSupplier = supplier;
     this.isModalOpen = true;
   }
 
-  viewSupplier(supplier: Supplier): void {
+  viewSupplier(supplier: SupplierUI): void {
     console.log('View supplier:', supplier);
     // Navigate to supplier detail page
   }
 
-  deleteSupplier(supplier: Supplier): void {
+  deleteSupplier(supplier: SupplierUI): void {
     if (confirm(`Are you sure you want to delete ${supplier.name}?`)) {
-      this.suppliers = this.suppliers.filter(s => s.id !== supplier.id);
-      console.log('Supplier deleted:', supplier);
+      this.loading = true;
+      this.supplierService.delete(supplier.id).subscribe({
+        next: () => {
+          this.suppliers = this.suppliers.filter(s => s.id !== supplier.id);
+          this.toastService.success('Supplier deleted successfully');
+          this.loading = false;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error deleting supplier:', error);
+          this.toastService.error('Failed to delete supplier');
+          this.loading = false;
+        }
+      });
     }
   }
 
@@ -93,28 +127,52 @@ export class Suppliers implements OnInit {
     this.selectedSupplier = undefined;
   }
 
-  onSupplierSave(supplier: Supplier): void {
+  onSupplierSave(supplier: any): void {
+    this.loading = true;
     if (supplier.id) {
-      // Update existing supplier
-      const index = this.suppliers.findIndex(s => s.id === supplier.id);
-      if (index !== -1) {
-        this.suppliers[index] = supplier;
-      }
+      // Update existing supplier - map UI fields to DTO
+      const supplierDTO = { name: supplier.name, contactInfo: supplier.contact || '' };
+      this.supplierService.update(supplier.id, supplierDTO).subscribe({
+        next: (updatedSupplier) => {
+          const index = this.suppliers.findIndex(s => s.id === supplier.id);
+          if (index !== -1) {
+            // Preserve UI fields
+            this.suppliers[index] = { ...supplier, ...updatedSupplier };
+          }
+          this.toastService.success('Supplier updated successfully');
+          this.onModalClose();
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error updating supplier:', error);
+          this.toastService.error('Failed to update supplier');
+          this.loading = false;
+        }
+      });
     } else {
-      // Create new supplier
-      const maxId = Math.max(0, ...this.suppliers.map(s => s.id || 0));
-      const newSupplier = {
-        ...supplier,
-        id: maxId + 1
-      };
-      this.suppliers = [...this.suppliers, newSupplier];
+      // Create new supplier - map UI fields to DTO
+      const supplierDTO = { name: supplier.name, contactInfo: supplier.contact || '' };
+      this.supplierService.create(supplierDTO).subscribe({
+        next: (newSupplier) => {
+          // Combine backend response with UI fields
+          this.suppliers = [...this.suppliers, { ...supplier, ...newSupplier }];
+          this.toastService.success('Supplier created successfully');
+          this.onModalClose();
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error creating supplier:', error);
+          this.toastService.error('Failed to create supplier');
+          this.loading = false;
+        }
+      });
     }
-    this.onModalClose();
   }
 
   getAverageRating(): number {
     if (this.suppliers.length === 0) return 0;
-    const sum = this.suppliers.reduce((acc, s) => acc + s.rating, 0);
+    const sum = this.suppliers.reduce((acc: number, s: any) => acc + (s.rating || 0), 0);
     return Math.round((sum / this.suppliers.length) * 10) / 10;
   }
 }
+
