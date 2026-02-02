@@ -5,8 +5,8 @@ export interface Inventory {
   id: string;
   product: Product;
   warehouse: Warehouse;
-  quantity: number;
-  reorderLevel: number;
+  qtyOnHand: number;
+  qtyReserved: number;
   createdAt: string;
   updatedAt: string;
 }

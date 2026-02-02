@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { WarehouseService } from '../../../core/services/warehouse.service';
 import { Warehouse } from '../../models/warehouse.model';
@@ -35,7 +36,8 @@ export class ProductFormModal implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private warehouseService: WarehouseService
+    private warehouseService: WarehouseService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.productForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -49,7 +51,9 @@ export class ProductFormModal implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadWarehouses();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadWarehouses();
+    }
   }
 
   loadWarehouses(): void {

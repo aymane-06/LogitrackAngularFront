@@ -1,5 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -69,5 +70,18 @@ export class TokenService {
   // Check if user is logged in
   isLoggedIn(): boolean {
     return !!this.getAccessToken();
+  }
+
+  isTokenExpired(token: string): boolean {
+    if (!token) return true;
+    try {
+      const decoded: any = jwtDecode(token);
+      if (!decoded.exp) return false;
+      
+      const currentTime = Math.floor(Date.now() / 1000);
+      return decoded.exp < currentTime;
+    } catch (e) {
+      return true;
+    }
   }
 }

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PurchaseOrders } from '../../features/warehouse-manager/purchase-orders/purchase-orders';
 import { AdminDashboard } from './dashboard/admin-dashboard';
 import { Products } from './products/products';
 import { Suppliers } from './suppliers/suppliers';
@@ -12,7 +13,8 @@ const routes: Routes = [
   { path: 'products', component: Products },
   { path: 'warehouses', component: Warehouses },
   { path: 'suppliers', component: Suppliers },
-  { path: 'users', component: Users }
+  { path: 'users', component: Users },
+  { path: 'purchase-orders', component: PurchaseOrders }
 ];
 
 @NgModule({

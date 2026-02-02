@@ -1,7 +1,7 @@
-import { Client } from './user.model';
 import { Product } from './product.model';
-import { Warehouse } from './warehouse.model';
 import { Shipment } from './shipment.model';
+import { Client } from './user.model';
+import { Warehouse } from './warehouse.model';
 
 export enum OrderStatus {
   CREATED = 'CREATED',
@@ -33,6 +33,7 @@ export interface SalesOrder {
 }
 
 export interface SalesOrderDTO {
+  clientId: string;
   warehouseId: string;
   lines: {
     productId: string;

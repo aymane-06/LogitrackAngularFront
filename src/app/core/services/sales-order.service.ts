@@ -51,6 +51,13 @@ export class SalesOrderService {
   }
 
   /**
+   * Get my sales orders (CLIENT)
+   */
+  getMyOrders(): Observable<SalesOrder[]> {
+    return this.http.get<SalesOrder[]>(`${this.API_URL}/my-orders`);
+  }
+
+  /**
    * Mark sales order as delivered (ADMIN, WAREHOUSE_MANAGER)
    */
   deliver(id: string): Observable<SalesOrder> {

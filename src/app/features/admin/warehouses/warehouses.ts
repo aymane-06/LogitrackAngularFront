@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, afterNextRender } from '@angular/core';
+import { afterNextRender, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ToastService } from '../../../core/services/toast.service';
 import { WarehouseService } from '../../../core/services/warehouse.service';
 import { TableAction, TableColumn } from '../../../shared/components/data-table.component';

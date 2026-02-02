@@ -18,14 +18,22 @@ export interface MenuItem {
 })
 export class Sidebar {
   menuItems: MenuItem[] = [
-    { label: 'Dashboard', icon: '📊', route: '/admin' },
-    { label: 'Users', icon: '👥', route: '/admin/users' },
-    { label: 'Products', icon: '📦', route: '/admin/products' },
-    { label: 'Warehouses', icon: '🏢', route: '/admin/warehouses' },
-    { label: 'Suppliers', icon: '🤝', route: '/admin/suppliers' },
-    { label: 'Purchase Orders', icon: '📋', route: '/admin/purchase-orders' },
-    { label: 'Reports', icon: '📈', route: '/admin/reports' },
-    { label: 'Settings', icon: '⚙️', route: '/admin/settings' }
+    // Admin Routes
+    { label: 'Dashboard', icon: '📊', route: '/admin', roles: [UserRole.ADMIN] },
+    { label: 'Users', icon: '👥', route: '/admin/users', roles: [UserRole.ADMIN] },
+    { label: 'Products', icon: '📦', route: '/admin/products', roles: [UserRole.ADMIN] },
+    { label: 'Warehouses', icon: '🏢', route: '/admin/warehouses', roles: [UserRole.ADMIN] },
+    { label: 'Suppliers', icon: '🤝', route: '/admin/suppliers', roles: [UserRole.ADMIN] },
+    { label: 'Purchase Orders', icon: '📋', route: '/admin/purchase-orders', roles: [UserRole.ADMIN] },
+    { label: 'Reports', icon: '📈', route: '/admin/reports', roles: [UserRole.ADMIN] },
+    { label: 'Settings', icon: '⚙️', route: '/admin/settings', roles: [UserRole.ADMIN] },
+
+    // Warehouse Manager Routes
+    { label: 'Dashboard', icon: '📊', route: '/warehouse-manager', roles: [UserRole.WAREHOUSE_MANAGER] },
+    { label: 'Purchase Orders', icon: '📋', route: '/warehouse-manager/purchase-orders', roles: [UserRole.WAREHOUSE_MANAGER] },
+    { label: 'Sales Orders', icon: '🛍️', route: '/warehouse-manager/sales-orders', roles: [UserRole.WAREHOUSE_MANAGER] },
+    { label: 'Inventory', icon: '📦', route: '/warehouse-manager/inventory', roles: [UserRole.WAREHOUSE_MANAGER] },
+    { label: 'Settings', icon: '⚙️', route: '/warehouse-manager/settings', roles: [UserRole.WAREHOUSE_MANAGER] }
   ];
   
   currentUser: User | null = null;
@@ -43,8 +51,8 @@ export class Sidebar {
       return true;
     }
     // For dashboard, only match exact route or route with query params
-    if (route === '/admin' || route === '/admin/dashboard') {
-      return this.router.url === route || this.router.url.startsWith(route + '?');
+    if (route === '/admin' || route === '/admin/dashboard' || route === '/warehouse-manager' || route === '/warehouse-manager/dashboard') {
+      return this.router.url === route || this.router.url === route + '/dashboard' || this.router.url.startsWith(route + '?');
     }
     // For other routes, check if current URL starts with the route
     return this.router.url.startsWith(route);

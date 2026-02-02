@@ -1,6 +1,11 @@
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule, provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { AuthEffects } from './store/auth/auth.effects';
+import { authReducer } from './store/auth/auth.reducer';
 
 import { App } from './app';
 import { AppRoutingModule } from './app-routing-module';
@@ -28,7 +33,10 @@ export function initializeApp(authService: AuthService) {
   imports: [
     BrowserModule,
     AppRoutingModule,
-    SharedModule
+    SharedModule,
+    StoreModule.forRoot({ auth: authReducer }),
+    EffectsModule.forRoot([AuthEffects]),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: false })
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

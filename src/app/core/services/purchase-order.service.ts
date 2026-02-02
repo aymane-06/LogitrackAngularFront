@@ -37,7 +37,7 @@ export class PurchaseOrderService {
    * Update purchase order status (ADMIN only)
    */
   updateStatus(id: string, status: string): Observable<PurchaseOrder> {
-    return this.http.patch<PurchaseOrder>(`${environment.apiUrl}/admins/purchaseOrder-status/update/${id}`, { status });
+    return this.http.patch<PurchaseOrder>(`${this.API_URL}/update-status/${id}`, null, { params: { status } });
   }
 
   /**

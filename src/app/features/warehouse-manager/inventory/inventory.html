@@ -1,1 +1,24 @@
-<p>inventory works!</p>
+<app-dashboard-layout title="Inventory Management" subtitle="Track and manage warehouse stock">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <!-- Filters / Actions Bar -->
+    <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+      <div class="flex gap-2">
+        <input type="text" placeholder="Search SKU or Product..." class="px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <select class="px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <option value="">All Warehouses</option>
+        </select>
+      </div>
+      <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors flex items-center gap-2">
+        <span>📥</span> Receive Stock
+      </button>
+    </div>
+
+    <!-- Data Table -->
+    <app-data-table
+      [data]="inventoryItems"
+      [columns]="columns"
+      [actions]="actions"
+      [loading]="loading">
+    </app-data-table>
+  </div>
+</app-dashboard-layout>

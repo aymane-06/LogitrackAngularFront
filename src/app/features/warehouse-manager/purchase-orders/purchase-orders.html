@@ -1,37 +1,34 @@
-<div class="container">
-  <h2>Purchase Orders</h2>
+<app-dashboard-layout title="Purchase Orders" subtitle="Manage incoming stock and supplier orders">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <!-- Filters / Actions Bar -->
+    <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+      <div class="flex gap-2">
+        <input type="text" placeholder="Search Order ID or Supplier..." class="px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <select class="px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <option value="">All Statuses</option>
+          <option value="CREATED">Created</option>
+          <option value="APPROVED">Approved</option>
+          <option value="RECEIVED">Received</option>
+        </select>
+      </div>
+      <button (click)="openNewOrderModal()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors flex items-center gap-2">
+        <span>➕</span> New Order
+      </button>
+    </div>
 
-  <div *ngIf="loading" class="loading">Loading...</div>
-  <div *ngIf="error" class="error">{{ error }}</div>
-
-  <table *ngIf="!loading && !error" class="table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Supplier</th>
-        <th>Warehouse</th>
-        <th>Expected Delivery</th>
-        <th>Status</th>
-        <th>Created At</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let order of purchaseOrders">
-        <td>{{ order.id }}</td>
-        <td>{{ order.supplier?.name || 'N/A' }}</td>
-        <td>{{ order.warehouse?.name || 'N/A' }}</td>
-        <td>{{ order.expectedDelivery | date }}</td>
-        <td><span [class]="'status-badge ' + order.status.toLowerCase()">{{ order.status }}</span></td>
-        <td>{{ order.createdAt | date:'short' }}</td>
-        <td>
-          <!-- Actions like view/edit usually go here -->
-          <button class="btn btn-sm btn-info">View</button>
-        </td>
-      </tr>
-      <tr *ngIf="purchaseOrders.length === 0">
-        <td colspan="7">No purchase orders found.</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+    <!-- Data Table -->
+    <app-data-table
+      [data]="purchaseOrders"
+      [columns]="columns"
+      [actions]="actions"
+      [loading]="loading">
+    </app-data-table>
+  </div>
+  
+  <app-purchase-order-form-modal
+    [isOpen]="isModalOpen"
+    [order]="selectedOrder"
+    (close)="closeModal()"
+    (save)="onSaveOrder($event)">
+  </app-purchase-order-form-modal>
+</app-dashboard-layout>

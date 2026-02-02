@@ -12,6 +12,7 @@ export interface TableAction {
   icon?: string;
   class?: string;
   handler: (item: any) => void;
+  condition?: (item: any) => boolean;
 }
 
 @Component({
@@ -70,11 +71,13 @@ export interface TableAction {
               {{ getNestedValue(item, column.key) }}
             </td>
             <td *ngIf="actions && actions.length > 0" class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <button *ngFor="let action of actions"
-                      (click)="action.handler(item)"
-                      [class]="action.class || 'text-blue-600 hover:text-blue-900 ml-4'">
-                {{ action.label }}
-              </button>
+              <ng-container *ngFor="let action of actions">
+                <button *ngIf="!action.condition || action.condition(item)"
+                        (click)="action.handler(item)"
+                        [class]="action.class || 'text-blue-600 hover:text-blue-900 ml-4'">
+                  {{ action.label }}
+                </button>
+              </ng-container>
             </td>
           </tr>
         </tbody>

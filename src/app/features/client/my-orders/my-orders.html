@@ -1,1 +1,22 @@
-<p>my-orders works!</p>
+<div class="p-6">
+  <div class="mb-6 flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">My Orders</h1>
+      <p class="text-sm text-gray-500 mt-1">View and track your order history</p>
+    </div>
+    <button routerLink="../create-order" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+      <span>+ New Order</span>
+    </button>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <app-data-table
+      [columns]="columns"
+      [data]="orders"
+      [loading]="loading"
+      [searchable]="true"
+      [paginate]="true"
+      [pageSize]="10">
+    </app-data-table>
+  </div>
+</div>

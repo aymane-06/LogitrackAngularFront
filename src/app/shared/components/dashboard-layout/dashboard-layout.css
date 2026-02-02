@@ -1,0 +1,6 @@
+/* Component styles tailored for layout structure */
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
